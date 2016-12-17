@@ -23,5 +23,6 @@
         "iot", 
         "mewSystem"
     ],  
-    "description": "Imports sensor reading function pointers to read them at regular intevarls and post to mewServer"
+    "description": "Imports sensor reading function pointers to read them at regular intevarls and post to mewServer",
+	"examples": "examples/*/*.ino"
 }
