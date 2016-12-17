@@ -7,6 +7,12 @@
     "type": "git",
     "url": "https://github.com/fngstudios/mewData.git"
   },
+  "authors":
+{
+    "name": "fngStudios",
+    "email": "fng@ezver.com.ar",
+    "url": "fng.ezver.com.ar"
+},
   "frameworks": "arduino",
   "platforms": "espressif8266",
   "version": "0.11"
