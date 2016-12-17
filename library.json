@@ -1,0 +1,13 @@
+{
+  "name": "mewData",
+  "keywords": "iot",
+  "description": "ESP8266 iot library, Imports sensor reading function pointers to read them at regular intevarls and post to mewServer",
+  "repository":
+  {
+    "type": "git",
+    "url": "https://github.com/fngstudios/mewData.git"
+  },
+  "frameworks": "arduino",
+  "platforms": "espressif8266",
+  "version": "0.11"
+}
