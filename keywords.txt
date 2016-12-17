@@ -1,0 +1,40 @@
+#######################################
+# Syntax Coloring Map For mewData
+#######################################
+
+#######################################
+# Datatypes (KEYWORD1)
+#######################################
+
+mew_Parameter	KEYWORD1
+mewData	KEYWORD1
+
+#######################################
+# Methods and Functions (KEYWORD2)
+#######################################
+setValue	KEYWORD2
+setRefreshFunction	KEYWORD2
+setId	KEYWORD2
+doRefresh	KEYWORD2
+getValue	KEYWORD2
+getId	KEYWORD2
+Active	KEYWORD2
+addParameter	KEYWORD2
+set_Apikey	KEYWORD2
+set_Route	KEYWORD2
+set_Host	KEYWORD2
+Update	KEYWORD2
+refreshParams	KEYWORD2
+setUpdateRate	KEYWORD2
+Work	KEYWORD2
+setDebug	KEYWORD2
+Run	KEYWORD2
+sendReset	KEYWORD2
+sendUptime	KEYWORD2
+sendRam	KEYWORD2
+
+#######################################
+# Constants (LITERAL1)
+#######################################
+
+#	LITERAL1
