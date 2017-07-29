@@ -1,27 +1,35 @@
 /**************************************************************
    mewData Library
-   fng Design 2016
-   v 0.1
-   Library encargada de gestionar la conexion y el envio de 
-   datos al server. Funciona con nodos Esp8266.
-   Requiere conexion previa a la red WiFi, generalmente lograda
-   con fngManager. Probablemente se unan ambas libs a futuro para
-   que gestione tambien la conexion Wifi y los parametros a enviar.
+   fng Design 2017
+
+ v 0.3   07/2017
+   Sobrecarga de la inicializacion para inicializar con UIPEthernet
+   Agregado de funciones de Serial para levantar datos de fngBus
+   Funciona con master en esp8266 o AVR.
    
+
+   v 0.2
+   Library encargada de gestionar la conexion y el envio de
+   datos al server. Funciona con nodos Esp8266.
+   Requiere conexion previa a la red, pudiendo ser
+	 Wifi o ethernet (enc28j60).
  **************************************************************/
+
 
 #ifndef mewData_h
 #define mewData_h
 
 #include <ESP8266WiFi.h>
 #include <memory>
+#include <UIPEthernet.h>
 
-#define MEWDATA_MAX_PARAMS 5
+
+#define MEWDATA_MAX_PARAMS 25
 
 class mew_Parameter {
   public:
     mew_Parameter(const char *id, float value, float (*refreshFunction)(), boolean active);
- 
+
 	void setValue(float Value);
 	void setRefreshFunction (float (*refreshFunction)());
 	void setId(const char* id);
@@ -29,19 +37,22 @@ class mew_Parameter {
 	float getValue();
 	const char* getId();
 	void Active(boolean Active);
-	
+
   private:
     const char *_id;
     float _value;
-	float (*_refreshFunction)();
-	boolean _active = false;
+	  float (*_refreshFunction)();
+	  boolean _active = false;
   friend class mewData;
 };
 
 
 class mewData{
 	public:
+
+
 		mewData(WiFiClient* mewClient,const char* Host, const char* Route, const char* Apikey);
+    	mewData(EthernetClient* mewClient,const char* Host, const char* Route, const char* Apikey);  
 		void addParameter(mew_Parameter *p);
 		void set_Apikey(const char *Apikey);
 		void set_Route(const char *Route);
@@ -73,7 +84,7 @@ class mewData{
 		boolean _sendUptime = true;
 		boolean _sendRam = false;
 		template <typename mGeneric>
-		void DEBUG_MEW(mGeneric text);	
+		void DEBUG_MEW(mGeneric text);
 };
 
 

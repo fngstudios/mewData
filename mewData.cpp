@@ -1,13 +1,16 @@
 /**************************************************************
    mewData Library
-   fng Design 2016
-   v 0.1
-   Library encargada de gestionar la conexion y el envio de 
+   fng Design 2017
+   v 0.3   07/2017
+   Sobrecarga de la inicializacion para inicializar con UIPEthernet
+   Agregado de funciones de Serial para levantar datos de fngBus
+   Funciona con master en esp8266 o AVR.
+
+   v 0.2
+   Library encargada de gestionar la conexion y el envio de
    datos al server. Funciona con nodos Esp8266.
-   Requiere conexion previa a la red WiFi, generalmente lograda
-   con fngManager. Probablemente se unan ambas libs a futuro para
-   que gestione tambien la conexion Wifi y los parametros a enviar.
-   
+   Requiere conexion previa a la red, pudiendo ser
+	 Wifi o ethernet (enc28j60).
  **************************************************************/
 
 #include "mewData.h"
@@ -19,7 +22,7 @@ mew_Parameter::mew_Parameter(const char *id, float value, float (*refreshFunctio
     _refreshFunction = refreshFunction;
 	_active = active;
 }
- 
+
 void mew_Parameter::setValue(float Value){
 	_value = Value;
 }
@@ -43,15 +46,15 @@ const char* mew_Parameter::getId(){
 void mew_Parameter::doRefresh(){
 	_value = (*_refreshFunction)();
 }
-	
+
 //-----------------------------------------------
 //			MewData
-//-----------------------------------------------	
+//-----------------------------------------------
 
 
 mewData::mewData(WiFiClient* mewClient, const char* Host, const char* Route, const char* Apikey){
-	
-	_WiFiClient = mewClient;
+
+	_Client = mewClient;
 	_Apikey = Apikey;
 	_Route = Route;
 	_Host = Host;
@@ -62,13 +65,33 @@ mewData::mewData(WiFiClient* mewClient, const char* Host, const char* Route, con
 	if (WiFi.status() != WL_CONNECTED){
 		DEBUG_MEW("no esta conectado!");
 	}else{
-		if (!_WiFiClient->connect(_Host, _Port)) {
+		if (!_Client->connect(_Host, _Port)) {
 			DEBUG_MEW("Conexion fallida!");
 		}else{
 			DEBUG_MEW("Conectado!");
 		}
 	}
 }
+
+mewData::mewData(EthernetClient* mewClient, const char* Host, const char* Route, const char* Apikey){
+
+	_Client = mewClient;
+	_Apikey = Apikey;
+	_Route = Route;
+	_Host = Host;
+	_UpdateTime = millis() + _UpdateRate;
+    _paramsCount = 0;
+	_debug = 0;
+	DEBUG_MEW("Inicializado");
+	if (!_Client->connect(_Host, _Port)) {
+		DEBUG_MEW("Conexion fallida!");
+	}else{
+		DEBUG_MEW("Conectado!");
+	}
+}
+
+
+
 
 void mewData::addParameter(mew_Parameter *p){
   _params[_paramsCount] = p;
@@ -114,7 +137,7 @@ void mewData::refreshParams(){
 		if (_params[i] == NULL) {
 			break;
 		}
-	if (_params[i]->_active){	
+	if (_params[i]->_active){
 	_params[i]->doRefresh();
 	DEBUG_MEW("refrescando parametro");
 	DEBUG_MEW(_params[i]->getId());
@@ -124,15 +147,15 @@ void mewData::refreshParams(){
 }
 void mewData::Work(){
 	if (_run){
-		
+    
 	if (millis() > _UpdateTime ){
 		this->refreshParams();
 		this->Update();
 		_UpdateTime = millis() + _UpdateRate;
 	}
-	while(_WiFiClient->available()){
+	while(_Client->available()){
     yield();
-    DEBUG_MEW(_WiFiClient->readStringUntil('k'));
+    DEBUG_MEW(_Client->readStringUntil('k'));
     delay(0);
 		}
 	}
@@ -160,7 +183,7 @@ void mewData::Update(){
 		_Url += float(ESP.getFreeHeap())/1024;
 		_Url += ',';
 	}
-	
+
 	for (int i = 0; i < _paramsCount; i++) {
 		if (_params[i] == NULL) {
 			break;
@@ -177,23 +200,23 @@ void mewData::Update(){
 	}
 	_Url +='}';
 	DEBUG_MEW(_Url);
-	if(_WiFiClient->connected()){
-		  _WiFiClient->print(String("GET ") + _Url + " HTTP/1.1\r\n" +
-               "Host: " + _Host + "\r\n" + 
+	if(_Client->connected()){
+		  _Client->print(String("GET ") + _Url + " HTTP/1.1\r\n" +
+               "Host: " + _Host + "\r\n" +
                "Connection: close\r\n\r\n");
 	}else{
-		if (!_WiFiClient->connect(_Host, _Port)) {
+		if (!_Client->connect(_Host, _Port)) {
 			DEBUG_MEW("Conexion fallida!");
 		}else{
 			DEBUG_MEW("Conectado!");
-			_WiFiClient->print(String("GET ") + _Url + " HTTP/1.1\r\n" +
-            "Host: " + _Host + "\r\n" + 
+			_Client->print(String("GET ") + _Url + " HTTP/1.1\r\n" +
+            "Host: " + _Host + "\r\n" +
             "Connection: close\r\n\r\n");
 		}
 	}
-	
+
 }
-		
+
 
 template <typename mGeneric>
 void mewData::DEBUG_MEW(mGeneric text) {
@@ -202,5 +225,3 @@ void mewData::DEBUG_MEW(mGeneric text) {
     Serial.println(text);
   }
 }
-
- 
