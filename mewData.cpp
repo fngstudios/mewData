@@ -54,7 +54,7 @@ void mew_Parameter::doRefresh(){
 
 mewData::mewData(WiFiClient* mewClient, const char* Host, const char* Route, const char* Apikey){
 	_isWiFi = true;
-	_Client = mewClient;
+	_WifiClient = mewClient;
 	_Apikey = Apikey;
 	_Route = Route;
 	_Host = Host;
@@ -76,7 +76,7 @@ mewData::mewData(WiFiClient* mewClient, const char* Host, const char* Route, con
 mewData::mewData(EthernetClient* mewClient, const char* Host, const char* Route, const char* Apikey){
 
 	_isWiFi = false;
-	_Client = mewClient;
+	_EthClient = mewClient;
 	_Apikey = Apikey;
 	_Route = Route;
 	_Host = Host;
@@ -162,13 +162,20 @@ void mewData::Work(){
 			this->Update();
 			_UpdateTime = millis() + _UpdateRate;
 		}
-		while(_Client->available()){
-    		yield();
-    		DEBUG_MEW(_Client->readStringUntil('k'));
-    		delay(0);
+		if (_isWiFi){
+			while(_WifiClient->available()){
+    			yield();
+    			DEBUG_MEW(_WifiClient->readStringUntil('k'));
+    			delay(0);
+			}
+		}else{
+			while(_EthClient->available()){
+    			yield();
+    			DEBUG_MEW(_EthClient->readStringUntil('k'));
+    			delay(0);
+			}
 		}
 	}
-	
 }
 
 void mewData::Update(){
@@ -211,21 +218,37 @@ void mewData::Update(){
 	}
 	_Url +='}';
 	DEBUG_MEW(_Url);
-	if(_Client->connected()){
-		  _Client->print(String("GET ") + _Url + " HTTP/1.1\r\n" +
-               "Host: " + _Host + "\r\n" +
-               "Connection: close\r\n\r\n");
-	}else{
-		if (!_Client->connect(_Host, _Port)) {
-			DEBUG_MEW("Conexion fallida!");
+	if (_isWiFi){
+		if(_WifiClient->connected()){
+			_WifiClient->print(String("GET ") + _Url + " HTTP/1.1\r\n" +
+				"Host: " + _Host + "\r\n" +
+				"Connection: close\r\n\r\n");
 		}else{
-			DEBUG_MEW("Conectado!");
-			_Client->print(String("GET ") + _Url + " HTTP/1.1\r\n" +
-            "Host: " + _Host + "\r\n" +
-            "Connection: close\r\n\r\n");
+			if (!_WifiClient->connect(_Host, _Port)) {
+				DEBUG_MEW("Conexion fallida!");
+			}else{
+				DEBUG_MEW("Conectado!");
+				_WifiClient->print(String("GET ") + _Url + " HTTP/1.1\r\n" +
+				"Host: " + _Host + "\r\n" +
+				"Connection: close\r\n\r\n");
+			}
+		}
+	}else{
+		if(_EthClient->connected()){
+			_EthClient->print(String("GET ") + _Url + " HTTP/1.1\r\n" +
+			"Host: " + _Host + "\r\n" +
+			"Connection: close\r\n\r\n");
+		}else{
+			if (!_EthClient->connect(_Host, _Port)) {
+				DEBUG_MEW("Conexion fallida!");
+			}else{
+				DEBUG_MEW("Conectado!");
+				_EthClient->print(String("GET ") + _Url + " HTTP/1.1\r\n" +
+				"Host: " + _Host + "\r\n" +
+				"Connection: close\r\n\r\n");
+			}
 		}
 	}
-
 }
 
 

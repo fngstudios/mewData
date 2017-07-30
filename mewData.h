@@ -79,8 +79,8 @@ class mewData{
         int           _paramsCount = 0;
 		unsigned int	_Reset = 5;
         mew_Parameter* _params[MEWDATA_MAX_PARAMS];
-
-		void* _Client;
+		WiFiClient* _WiFiClient;
+		EthernetClient* _EthClient;
 		boolean _debug=false;
 		boolean _run = false;
 		boolean _sendReset = true;
