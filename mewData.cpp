@@ -73,7 +73,7 @@ mewData::mewData(WiFiClient* mewClient, const char* Host, const char* Route, con
 	}
 }
 
-mewData::mewData(EthernetClient* mewClient, const char* Host, const char* Route, const char* Apikey){
+mewData::mewData(EthernetClient* mewClient, const char* Host, const char* Route, const char* Apikey, const byte* mac){
 
 	_isWiFi = false;
 	_EthClient = mewClient;
