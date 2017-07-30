@@ -66,7 +66,9 @@ class mewData{
 		void sendReset(boolean sendReset);
 		void sendUptime(boolean Uptime);
 		void sendRam(boolean sendRam);
+		void set_Type(boolean isWiFi);
 	private:
+		boolean _isWiFi = false;
 		int _Port = 80;
 		const char* _Apikey;
 		String _Url;
@@ -77,7 +79,8 @@ class mewData{
         int           _paramsCount = 0;
 		unsigned int	_Reset = 5;
         mew_Parameter* _params[MEWDATA_MAX_PARAMS];
-		WiFiClient* _WiFiClient;
+		WiFiClient* _Client;
+		EthernetClient* _Client;
 		boolean _debug=false;
 		boolean _run = false;
 		boolean _sendReset = true;

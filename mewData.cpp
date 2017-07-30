@@ -53,7 +53,7 @@ void mew_Parameter::doRefresh(){
 
 
 mewData::mewData(WiFiClient* mewClient, const char* Host, const char* Route, const char* Apikey){
-
+	_isWiFi = true;
 	_Client = mewClient;
 	_Apikey = Apikey;
 	_Route = Route;
@@ -75,6 +75,7 @@ mewData::mewData(WiFiClient* mewClient, const char* Host, const char* Route, con
 
 mewData::mewData(EthernetClient* mewClient, const char* Host, const char* Route, const char* Apikey){
 
+	_isWiFi = false;
 	_Client = mewClient;
 	_Apikey = Apikey;
 	_Route = Route;
@@ -96,6 +97,10 @@ mewData::mewData(EthernetClient* mewClient, const char* Host, const char* Route,
 
 
 
+
+void mewData::set_Type(boolean isWiFi){
+	_isWiFi = isWiFi;
+}
 
 void mewData::addParameter(mew_Parameter *p){
   _params[_paramsCount] = p;
@@ -152,18 +157,20 @@ void mewData::refreshParams(){
 void mewData::Work(){
 	if (_run){
     
-	if (millis() > _UpdateTime ){
-		this->refreshParams();
-		this->Update();
-		_UpdateTime = millis() + _UpdateRate;
-	}
-	while(_Client->available()){
-    yield();
-    DEBUG_MEW(_Client->readStringUntil('k'));
-    delay(0);
+		if (millis() > _UpdateTime ){
+			this->refreshParams();
+			this->Update();
+			_UpdateTime = millis() + _UpdateRate;
+		}
+		while(_Client->available()){
+    		yield();
+    		DEBUG_MEW(_Client->readStringUntil('k'));
+    		delay(0);
 		}
 	}
+	
 }
+
 void mewData::Update(){
 	DEBUG_MEW("Updating");
 	_Url = "";
