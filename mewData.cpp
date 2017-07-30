@@ -82,11 +82,15 @@ mewData::mewData(EthernetClient* mewClient, const char* Host, const char* Route,
 	_UpdateTime = millis() + _UpdateRate;
     _paramsCount = 0;
 	_debug = 0;
-	DEBUG_MEW("Inicializado");
-	if (!_Client->connect(_Host, _Port)) {
-		DEBUG_MEW("Conexion fallida!");
-	}else{
-		DEBUG_MEW("Conectado!");
+	if (Ethernet.begin(mac) == 0) {
+    	DEBUG_MEW("Failed to configure Ethernet using DHCP");
+  	}else{
+		DEBUG_MEW("Inicializado");
+		if (!_Client->connect(_Host, _Port)) {
+			DEBUG_MEW("Conexion fallida!");
+		}else{
+			DEBUG_MEW("Conectado!");
+		}
 	}
 }
 
