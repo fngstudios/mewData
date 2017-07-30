@@ -65,7 +65,7 @@ mewData::mewData(WiFiClient* mewClient, const char* Host, const char* Route, con
 	if (WiFi.status() != WL_CONNECTED){
 		DEBUG_MEW("no esta conectado!");
 	}else{
-		if (!_Client->connect(_Host, _Port)) {
+		if (!_WifiClient->connect(_Host, _Port)) {
 			DEBUG_MEW("Conexion fallida!");
 		}else{
 			DEBUG_MEW("Conectado!");
@@ -87,7 +87,7 @@ mewData::mewData(EthernetClient* mewClient, const char* Host, const char* Route,
     	DEBUG_MEW("Failed to configure Ethernet using DHCP");
   	}else{
 		DEBUG_MEW("Inicializado");
-		if (!_Client->connect(_Host, _Port)) {
+		if (!_EthClient->connect(_Host, _Port)) {
 			DEBUG_MEW("Conexion fallida!");
 		}else{
 			DEBUG_MEW("Conectado!");
