@@ -81,7 +81,7 @@ class mewData{
         mew_Parameter* _params[MEWDATA_MAX_PARAMS];
 		WiFiClient* _WifiClient;
 		EthernetClient* _EthClient;
-		boolean _debug=false;
+		boolean _debug=true;
 		boolean _run = false;
 		boolean _sendReset = true;
 		boolean _sendUptime = true;
