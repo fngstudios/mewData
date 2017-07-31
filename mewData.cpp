@@ -235,7 +235,7 @@ void mewData::Update(){
 			}
 		}
 	}else{
-		_EthClient->maintain();
+		//_EthClient->maintain();
 		if(_EthClient->connected()){
 			_EthClient->print(String("GET ") + _Url + " HTTP/1.1\r\n" +
 			"Host: " + _Host + "\r\n" +
