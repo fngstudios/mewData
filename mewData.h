@@ -51,8 +51,8 @@ class mewData{
 	public:
 
 
-		mewData(WiFiClient* mewClient,const char* Host, const char* Route, const char* Apikey);
-    	mewData(EthernetClient* mewClient,const char* Host, const char* Route, const char* Apikey,const byte* mac);  
+		mewData(WiFiClient* mewClient,const char* Host, const char* Route, const char* Apikey,boolean debug = 0);
+    	mewData(EthernetClient* mewClient,const char* Host, const char* Route, const char* Apikey,boolean debug = 0,const byte* mac);  
 		void addParameter(mew_Parameter *p);
 		void set_Apikey(const char *Apikey);
 		void set_Route(const char *Route);
@@ -81,7 +81,7 @@ class mewData{
         mew_Parameter* _params[MEWDATA_MAX_PARAMS];
 		WiFiClient* _WifiClient;
 		EthernetClient* _EthClient;
-		boolean _debug=true;
+		boolean _debug = false;
 		boolean _run = false;
 		boolean _sendReset = true;
 		boolean _sendUptime = true;

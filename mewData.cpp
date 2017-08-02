@@ -52,7 +52,7 @@ void mew_Parameter::doRefresh(){
 //-----------------------------------------------
 
 
-mewData::mewData(WiFiClient* mewClient, const char* Host, const char* Route, const char* Apikey){
+mewData::mewData(WiFiClient* mewClient, const char* Host, const char* Route, const char* Apikey,boolean debug = 0){
 	_isWiFi = true;
 	_WifiClient = mewClient;
 	_Apikey = Apikey;
@@ -60,7 +60,7 @@ mewData::mewData(WiFiClient* mewClient, const char* Host, const char* Route, con
 	_Host = Host;
 	_UpdateTime = millis() + _UpdateRate;
     _paramsCount = 0;
-	_debug = 1;
+	_debug = debug;
 	DEBUG_MEW("Inicializado");
 	if (WiFi.status() != WL_CONNECTED){
 		DEBUG_MEW("no esta conectado!");
@@ -73,7 +73,7 @@ mewData::mewData(WiFiClient* mewClient, const char* Host, const char* Route, con
 	}
 }
 
-mewData::mewData(EthernetClient* mewClient, const char* Host, const char* Route, const char* Apikey, const byte* mac){
+mewData::mewData(EthernetClient* mewClient, const char* Host, const char* Route, const char* Apikey, const byte* mac, boolean debug = 0){
 
 	_isWiFi = false;
 	_EthClient = mewClient;
@@ -82,7 +82,7 @@ mewData::mewData(EthernetClient* mewClient, const char* Host, const char* Route,
 	_Host = Host;
 	_UpdateTime = millis() + _UpdateRate;
     _paramsCount = 0;
-	_debug = 1;
+	_debug = debug;
 	DEBUG_MEW("Inicializando");
 	if (Ethernet.begin(mac) == 0) {
     	DEBUG_MEW("Failed to configure Ethernet using DHCP");
@@ -175,6 +175,7 @@ void mewData::Work(){
     			DEBUG_MEW(_EthClient->readStringUntil('k'));
     			delay(0);
 			}
+			_EthClient->stop();
 		}
 	}
 }
@@ -235,12 +236,14 @@ void mewData::Update(){
 			}
 		}
 	}else{
-		//_EthClient->maintain();
+		Ethernet.maintain();
 		if(_EthClient->connected()){
+			DEBUG_MEW("Estaba conectado!");
 			_EthClient->print(String("GET ") + _Url + " HTTP/1.1\r\n" +
 			"Host: " + _Host + "\r\n" +
 			"Connection: close\r\n\r\n");
 		}else{
+			DEBUG_MEW("Conectando!");
 			if (!_EthClient->connect(_Host, _Port)) {
 				DEBUG_MEW("Conexion fallida!");
 			}else{
