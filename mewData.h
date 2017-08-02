@@ -52,7 +52,7 @@ class mewData{
 
 
 		mewData(WiFiClient* mewClient,const char* Host, const char* Route, const char* Apikey,boolean debug = 0);
-    	mewData(EthernetClient* mewClient,const char* Host, const char* Route, const char* Apikey,boolean debug = 0,const byte* mac);  
+    	mewData(EthernetClient* mewClient,const char* Host, const char* Route, const char* Apikey, const byte* mac, boolean debug = 0);  
 		void addParameter(mew_Parameter *p);
 		void set_Apikey(const char *Apikey);
 		void set_Route(const char *Route);
