@@ -51,8 +51,8 @@ class mewData{
 	public:
 
 
-		mewData(WiFiClient* mewClient,const char* Host, const char* Route, const char* Apikey,boolean debug = 0);
-    	mewData(EthernetClient* mewClient,const char* Host, const char* Route, const char* Apikey, const byte* mac, boolean debug = 0);  
+		mewData(WiFiClient* mewClient,const char* Host, const char* Route, const char* Apikey,boolean debug);
+    	mewData(EthernetClient* mewClient,const char* Host, const char* Route, const char* Apikey, const byte* mac, boolean debug);  
 		void addParameter(mew_Parameter *p);
 		void set_Apikey(const char *Apikey);
 		void set_Route(const char *Route);
